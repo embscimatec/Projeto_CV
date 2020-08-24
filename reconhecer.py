@@ -79,11 +79,11 @@ while True:
                     if matches[match_index]:
                         name = names[match_index].upper()
                         for row in csv_dict_reader:
-                            if name == row['nome'].upper():
-                                print("Nome:" + row['nome'])
-                                print("Plano de Saude:" + row['plano'])
-                                print("CPF:" + row['cpf'])
-                                print("Telefone:" + row['tel'])
+                            if name == row['Nome'].upper():
+                                print("Nome:" + row["Nome"])
+                                print("Plano de Saude:" + row["Plano"])
+                                print("CPF:" + row["CPF"])
+                                print("Telefone:" + row["Tel"])
                                 print()
 
             break

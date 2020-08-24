@@ -1,4 +1,5 @@
 import os
+import csv
 import cv2
 import numpy as np
 import face_recognition as fr
@@ -38,24 +39,32 @@ while True:
 
         cv2.rectangle(detected, (x1, y1), (x2, y2), (0,255,0), 2)
         cv2.rectangle(detected, (x1, y2-28), (x2, y2), (0,255,0), cv2.FILLED)
-        cv2.putText(detected, str(index), (x1+6, y2-6), cv2.FONT_HERSHEY_PLAIN, 1.2, (255,255,255), 2)
+        cv2.putText(detected, "Paciente "+str(index), (x1+6, y2-6), 
+                    cv2.FONT_HERSHEY_COMPLEX_SMALL, 1.2, (255,255,255), 2)
     
     cv2.imshow('Webcam', detected)
 
     if k == 10:
         if faces_cur_frame:
-            with open(csv_list, 'r+') as f:
+            with open(csv_list, 'a') as csvfile:
+                fieldnames = ["Nome", "Plano", "CPF", "Tel"]
+                writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
                 for index, face_loc in enumerate(faces_cur_frame):
                 
-                    name = input("Nome do paciente "+ str(index) + ": ")
+                    name = input("Nome do paciente " + str(index) + ": ")
                     if name not in names:
-                        plan = input("Plano de saude: ")
-                        cpf = int(input("CPF: "))
-                        tel = int(input("Telefone: "))
-                        #plan = "PlanoX"
-                        #cpf = 12345
-                        #tel = 23456
-                        f.writelines('\n'+str(name)+','+str(plan)+','+str(cpf)+','+str(tel))
+                        #plan = input("Plano de saude: ")
+                        #cpf = int(input("CPF: "))
+                        #tel = int(input("Telefone: "))
+                        plan = "PlanoX"
+                        cpf = 12345
+                        tel = 23456
+                        infos = {"Nome":name, 
+                                 "Plano":plan, 
+                                 "CPF":cpf, 
+                                 "Tel":tel}
+
+                        writer.writerow(infos)
 
                         y1, x2, y2, x1 = face_loc
                         x1, x2 = int(x1/scale), int(x2/scale)
