@@ -39,7 +39,7 @@ while True:
 
         cv2.rectangle(detected, (x1, y1), (x2, y2), (0,255,0), 2)
         cv2.rectangle(detected, (x1, y2-28), (x2, y2), (0,255,0), cv2.FILLED)
-        cv2.putText(detected, "Paciente "+str(index), (x1+6, y2-6), 
+        cv2.putText(detected, "Paciente "+str(index+1), (x1+6, y2-6), 
                     cv2.FONT_HERSHEY_COMPLEX_SMALL, 1.2, (255,255,255), 2)
     
     cv2.imshow('Webcam', detected)
@@ -51,7 +51,7 @@ while True:
                 writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
                 for index, face_loc in enumerate(faces_cur_frame):
                 
-                    name = input("Nome do paciente " + str(index) + ": ")
+                    name = input("Nome do paciente " + str(index+1) + ": ")
                     if name not in names:
                         #plan = input("Plano de saude: ")
                         #cpf = int(input("CPF: "))

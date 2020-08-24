@@ -1,8 +1,10 @@
-import os
-import cv2
-import numpy as np
 import face_recognition as fr
+import numpy as np
+import cv2
+import os
 import csv
+import shutil
+from tempfile import NamedTemporaryFile
 
 img_path = 'data'
 csv_file = 'Registros.csv'
@@ -14,6 +16,32 @@ scale = 0.25
 for img in dataset:
     images.append(cv2.imread(img_path+'/'+img))
     names.append(os.path.splitext(img)[0])
+
+def edit_data(name):
+    filename = 'Registros.csv'
+    temp_file = NamedTemporaryFile(mode='w', delete=False)
+
+    with open(filename , "r") as csvfile, temp_file:
+
+        reader = csv.DictReader(csvfile)
+        fieldnames = ['Nome', 'Plano', 'CPF', 'Tel']
+        writer = csv.DictWriter(temp_file, fieldnames=fieldnames)
+        writer.writeheader()
+        for row in reader:
+            if str(row["Nome"]).upper() == name.upper():
+                row["Nome"] = input("Qual o nome? ")
+                row["Plano"] = input("Qual o Plano de Saude? ")
+                row["CPF"] = int(input("Qual o CPF? "))
+                row["Tel"] = int(input("Qual o Telefone? "))
+                old = '{}/{}.jpg'.format(img_path, name)
+                new = '{}/{}.jpg'.format(img_path, row["Nome"])
+                os.rename(old, new)
+            writer.writerow(row)
+        
+        shutil.move(temp_file.name, filename)
+        return True
+    return False
+
 
 def findEncodings(images):
     encodes = list()
@@ -71,20 +99,14 @@ while True:
                     x1, x2 = int(x1/scale), int(x2/scale)
                     y1, y2 = int(y1/scale), int(y2/scale)
                     
-                    #delta_x = abs(int(0.2*(x2 - x1)))   # caso das bordas
-                    #delta_y = abs(int(0.2*(y2 - y1)))
-                    #face = detected[y1-delta_y:y2+delta_y , x1-delta_x:x2+delta_x]
-                    #cv2.imshow('Rosto', frame)
+                    delta_x = abs(int(0.2*(x2 - x1)))   # caso das bordas
+                    delta_y = abs(int(0.2*(y2 - y1)))
+                    face = detected[y1-delta_y:y2+delta_y , x1-delta_x:x2+delta_x]
+                    cv2.imshow('Rosto', frame)
 
                     if matches[match_index]:
-                        name = names[match_index].upper()
-                        for row in csv_dict_reader:
-                            if name == row['Nome'].upper():
-                                print("Nome:" + row["Nome"])
-                                print("Plano de Saude:" + row["Plano"])
-                                print("CPF:" + row["CPF"])
-                                print("Telefone:" + row["Tel"])
-                                print()
+                        name = names[match_index]
+                        edit_data(name)
 
             break
         
