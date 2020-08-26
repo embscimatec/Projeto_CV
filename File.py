@@ -3,23 +3,24 @@ import csv
 import shutil
 from tempfile import NamedTemporaryFile
 
-class CSV:
+class File:
   
   def __init__(self, img_path, csv_path, fieldnames):
     self.__img_path = img_path
     self.__csv_file = csv_path
     self.__fieldnames = fieldnames
-
-    self.writer = csv.DictWriter(self.__csv_file, fieldnames=self.__fieldnames)
-    self.reader = csv.DictReader(self.__csv_file)
   
 
   def initCSV(self):
-    self.writer.writeheader()
+    # Melhorar esse método
+    with open(self.__csv_file, 'a') as csvfile:
+      self.writer = csv.DictWriter(csvfile, fieldnames=self.__fieldnames)
+      self.writer.writeheader()
 
 
   def showInfo(self, name):
     with open(self.__csv_file, 'r'):
+      self.reader = csv.DictReader(self.__csv_file)
       for row in self.reader:
         if name.upper() == row['Nome'].upper():
           for k, v in enumerate(row):
@@ -28,9 +29,14 @@ class CSV:
   
   def addRow(self, name):
     with open(self.__csv_file, 'a') as csvfile:
+      self.writer = csv.DictWriter(csvfile, fieldnames=self.__fieldnames)
       infos = dict()
+      infos['Nome'] = name
       for fn in self.__fieldnames:
-        infos[fn] = input(f"Digite o {fn}: ")
+        if fn == 'Nome':
+          pass
+        else:
+          infos[fn] = input(f"Digite o {fn}: ")
 
       self.writer.writerow(infos)
 

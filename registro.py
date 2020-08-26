@@ -1,5 +1,4 @@
-import os
-import csv
+import CSV
 import cv2
 import numpy as np
 import face_recognition as fr
@@ -73,6 +72,7 @@ while True:
                         delta_y = abs(int(0.2*(y2 - y1)))
                         face = frame[y1-delta_y:y2+delta_y , x1-delta_x:x2+delta_x]
                         cv2.imwrite(path+'/'+name+'.jpg', face)
+                        names.append(name)
                     else:
                         print("Paciente ja cadastrado")
             break
