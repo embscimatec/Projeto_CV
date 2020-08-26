@@ -19,12 +19,12 @@ class File:
 
 
   def showInfo(self, name):
-    with open(self.__csv_file, 'r'):
-      self.reader = csv.DictReader(self.__csv_file)
+    with open(self.__csv_file, 'r') as csvfile:
+      self.reader = csv.DictReader(csvfile)
       for row in self.reader:
         if name.upper() == row['Nome'].upper():
-          for k, v in enumerate(row):
-            print(f"{k}: {v}")
+          for key in row:
+            print(f"{key}: {row[key]}")
             
   
   def addRow(self, name):
@@ -44,12 +44,14 @@ class File:
   def editData(self, name):
     temp_file = NamedTemporaryFile(mode='w', delete=False)
     with open(self.__csv_file, 'r') as csvfile, temp_file:
+      self.reader = csv.DictReader(csvfile)
       temp_writer = csv.DictWriter(temp_file, fieldnames=self.__fieldnames)
       temp_writer.writeheader()
       for row in self.reader:
         if row['Nome'].upper() == name.upper():
-          for k in row.keys:
-            row[k] = input(f"Digite o novo {k}: ")
+          print(f"Alterando os dados de {row['Nome']}...")
+          for k in row:
+            row[k] = input(f"Digite o novo {k}: ").upper()
           old_name = '{}/{}.jpg'.format(self.__img_path, name)
           new_name = '{}/{}.jpg'.format(self.__img_path, row['Nome'])
           os.rename(old_name, new_name)
